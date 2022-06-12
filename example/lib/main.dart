@@ -23,6 +23,14 @@ class _MyAppState extends State<MyApp> {
     initPlatformState();
   }
 
+  void dispose() {
+    Future.delayed(Duration.zero, () async {
+      await NativeJVM.stop;
+    });
+
+    super.dispose();
+  }
+
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
     String platformVersion;
@@ -39,8 +47,6 @@ class _MyAppState extends State<MyApp> {
       } on PlatformException {
         platformVersion = 'Failed to get platform version.';
       }
-
-      await NativeJVM.stop;
     } on PlatformException {
       platformVersion = 'Failed to start clr.';
     }

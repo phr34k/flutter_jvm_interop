@@ -14,8 +14,8 @@ set(PLUGIN_NAME "native_jvm_plugin")
 
 add_library(${PLUGIN_NAME} SHARED
   "native_jvm_plugin.cpp"
-  "clr.cpp"
-  "clr.h"
+  "jvm.cpp"
+  "jvm.h"
 )
 
 message("${JVM_LIB}")

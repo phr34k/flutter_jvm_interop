@@ -18,7 +18,7 @@
 #include <memory>
 #include <sstream>
 #include <string>
-#include "clr.h"
+#include "jvm.h"
 
 namespace {
 

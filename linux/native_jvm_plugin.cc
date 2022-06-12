@@ -6,7 +6,7 @@
 
 #include <cstring>
 #include <iostream>
-#include "clr.h"
+#include "jvm.h"
 
 #define NATIVE_JVM_PLUGIN(obj) \
   (G_TYPE_CHECK_INSTANCE_CAST((obj), native_jvm_plugin_get_type(), \

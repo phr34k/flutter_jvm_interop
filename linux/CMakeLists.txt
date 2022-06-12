@@ -21,8 +21,8 @@ set(PLUGIN_NAME "native_jvm_plugin")
 # Any new source files that you add to the plugin should be added here.
 add_library(${PLUGIN_NAME} SHARED
   "native_jvm_plugin.cc"
-  "clr.cpp"
-  "clr.h"  
+  "jvm.cpp"
+  "jvm.h"  
 )
 
 # Apply a standard set of build settings that are configured in the
