@@ -7,9 +7,33 @@ cmake_minimum_required(VERSION 3.10)
 set(PROJECT_NAME "native_jvm")
 project(${PROJECT_NAME} LANGUAGES CXX)
 
-find_path(JNI_INCLUDE_PATH NAMES jni.h REQUIRED PATHS  "/usr/lib/jvm/java-1.16.0-openjdk-amd64/" PATH_SUFFIXES include )
-find_path(JVM_LIB NAMES libjvm.so REQUIRED PATHS  "${JNI_INCLUDE_PATH}/../lib/server"  )
+# run cmake with environment variable to JAVA_SDK set to /usr/lib/jvm/java-1.16.0-openjdk-amd64/
+if(DEFINED ENV{JAVA_SDK})	
+	set(JAVA_SDK "$ENV{JAVA_SDK}" CACHE STRING "" FORCE)
+endif()
+
+if(NOT DEFINED CACHE{JAVA_SDK})
+	message(FATAL_ERROR "Set JAVA_SDK=/usr/lib/jvm/java-1.16.0-openjdk-amd64/ to configure java installation")
+else()
+	message("Set JAVA_SDK=/usr/lib/jvm/java-1.16.0-openjdk-amd64/ to update java installation")
+endif()
+
+# This looks the path containing jni.h in ${JAVA_SDK}/include e.g. /usr/lib/jvm/java-1.16.0-openjdk-amd64/include
+find_path(JNI_INCLUDE_PATH NAMES jni.h REQUIRED PATHS "${JAVA_SDK}" PATH_SUFFIXES include )
+
+# This looks the path containing libjvm.so in ${JAVA_SDK}/lib/server e.g. /usr/lib/jvm/java-1.16.0-openjdk-amd64/lib/server
+find_path(JVM_LIB NAMES libjvm.so REQUIRED PATHS  "${JAVA_SDK}lib/server"  )
+
+# This looks for the java compiler ( javac )
+find_program(JAVAC javac REQUIRED PATHS "${JAVA_SDK}bin/" NO_DEFAULT_PATH )
+
 message("${JVM_LIB}")
+message("${JAVAC}")
+
+# This resolves the `/java` folder and then uses a cmake install rule to compile the main.java 
+# with javac on every flutter run/build invocation similair how asset bundles are build.
+get_filename_component(JAVA_SOURCE_PATH "${CMAKE_SOURCE_DIR}/../../java" ABSOLUTE)
+install(CODE "execute_process(COMMAND ${JAVAC} -d ${JAVA_SOURCE_PATH} ${JAVA_SOURCE_PATH}/main.java)" RUNTIME_COMPONENT)
 
 # This value is used when generating builds using this plugin, so it must
 # not be changed.
